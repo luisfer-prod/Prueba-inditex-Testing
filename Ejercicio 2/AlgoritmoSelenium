@@ -1,0 +1,40 @@
+from selenium import webdriver
+from selenium.webdriver import ActionChains
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
+import time
+
+#Aqui inicializamos el driver de Chrome y le añadimos la configuración de que no se cierre el navegador al acabar la ejecución
+driver = webdriver.Chrome()
+options = webdriver.ChromeOptions()
+options.add_experimental_option("detach", True)
+driver = webdriver.Chrome(options=options)
+
+#Abrimos la web de google
+driver.get("http://google.es")
+
+# Los métodos 'wait' son para designar el tiempo que el buscador esterá buscando un elemento específico
+wait = WebDriverWait(driver, 4)
+
+#Pulsamos en 'Aceptar todo'
+AceptarTodo = wait.until(EC.presence_of_element_located((By.ID, "L2AGLb")))
+AceptarTodo.click()
+
+# Metemos el texto en el buscador y pulsamos intro
+driver.find_element(By.ID, "APjFqb").send_keys("automatización")
+driver.find_element(By.ID, "APjFqb").send_keys(Keys.RETURN)
+
+#Pulsamos en el enlace de Wikipedia
+Wikipedia = wait.until(EC.presence_of_element_located((By.PARTIAL_LINK_TEXT, "Wikipedia, la enciclopedia libre")))
+Wikipedia.click()
+
+#Nos dirigimos a la zona de la página donde se describe el año del primero proceso automático
+Historia = wait.until(EC.presence_of_element_located((By.ID, "Siglo_XX")))
+ActionChains(driver,2).scroll_to_element(Historia).perform()
+
+boolValue = driver.save_screenshot('./automatismo.png')
+
+if boolValue:
+    driver.quit()
